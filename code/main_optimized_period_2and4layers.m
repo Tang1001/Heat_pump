@@ -81,7 +81,7 @@ m_s_dot_data=V_water(1*8:1*20)*1000;    %[L/h] 07:00~19:00
 
 %% 
 % period time
-period_time = 2;    %[h]
+period_time = 3;    %[h]
 sample_num = period_time/(sample_time/60);
 
 time_data_period = zeros((sample_num+1),12/period_time);
@@ -108,18 +108,26 @@ T_bottom_tank2_interp_period(:,i) =  T_bottom_tank2_interp(1+(i-1)*sample_num:i*
 end
 
 
+%%
+load("optimal_params.mat")
+R_tank12_optimal = P_optimal(1);
+m_layer_tank2_optimal=zeros(num_layer_tank2,1);
+for i=1:num_layer_tank2
+    m_layer_tank2_optimal(i) = P_optimal(i+1);
+end
 
+diff_T_c_optimal = P_optimal((1+num_layer_tank2)+1);
+T_s_optimal = P_optimal((1+num_layer_tank2)+2);
+m_c_dot_optimal = P_optimal((1+num_layer_tank2)+3);
 
 
 %%
-
-
 T_results_period = zeros(sample_num+1,num_layer_tank1+num_layer_tank2,12/period_time);
 for i=1:12/period_time
 
     %_period(:,i)
 T_initial=initial_T_setting(num_layer_tank1,num_layer_tank2,m_layer_tank1,m_layer_tank2,T_upper_tank1_interp_period(1,i),T_upper_tank2_interp_period(1,i),T_bottom_tank2_interp_period(1,i));
-T_results_period(:,:,i) = system_of_equations_Euler_Nlayers(time_data_period(:,i), T_initial, m_p_dot_interp_period(:,i), T_in_interp_period(:,i), m_s_dot_interp_period(:,i), num_layer_tank1,num_layer_tank2, m_layer_tank1, m_layer_tank2, R_tank12, m_c_dot, diff_T_c, T_s);
+T_results_period(:,:,i) = system_of_equations_Euler_Nlayers(time_data_period(:,i), T_initial, m_p_dot_interp_period(:,i), T_in_interp_period(:,i), m_s_dot_interp_period(:,i), num_layer_tank1,num_layer_tank2, m_layer_tank1, m_layer_tank2_optimal, R_tank12_optimal, m_c_dot_optimal, diff_T_c_optimal, T_s_optimal);
 
 
 end
@@ -137,8 +145,6 @@ end
 
 plot_comparison_T_period(time_data,T_results_0_12,period_time,num_layer_tank1,num_layer_tank2,T_upper_tank1_data,T_upper_tank2_data,T_bottom_tank2_data)
 
+%%
 
-% %% 7:00~19:00 0~12
-% period_time = 6;    %[h]
-% T_results=system_simulation_Euler_period(period_time, time_data,sample_time,num_layer_tank1,num_layer_tank2,T_out_he,FR_hp,T_bottom_tank2,T_upper_tank1,T_upper_tank2,V_water);
-
+save("model_T_010523","T_results_0_12")

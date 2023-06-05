@@ -167,6 +167,7 @@ set(gcf,'position',[500,100,700,800])
 figure;
 surf(num_layer_tank2_index, num_layer_tank1_index, err_upper_tank1+err_upper_tank2+err_bottom_tank2);
 colorbar;  % Adds a colorbar to the figure
+colormap winter
 xlabel('The number of layers in tank2')
 ylabel('The number of layers in tank1')
 zlabel('Total error')

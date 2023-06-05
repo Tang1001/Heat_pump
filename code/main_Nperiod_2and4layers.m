@@ -100,29 +100,38 @@ end
 % plot_comparison_T_period(time_data,T_results_0_12,period_time,num_layer_tank1,num_layer_tank2,T_upper_tank1_data,T_upper_tank2_data,T_bottom_tank2_data)
 
 %%
+% figure;
+% subplot(3,1,1)
+% plot(period_time_index, err_upper_tank1,LineWidth=2);
+% xlabel('Period Time (h)')
+% ylabel('Error of the upper temperature in tank1')
+% grid on
+% subplot(3,1,2)
+% plot(period_time_index, err_upper_tank2,LineWidth=2);
+% xlabel('Period Time (h)')
+% ylabel('Error of the upper temperature in tank2')
+% grid on
+% subplot(3,1,3)
+% plot(period_time_index, err_bottom_tank2,LineWidth=2);
+% xlabel('Period Time (h)')
+% ylabel('Error of the bottom temperature in tank1')
+% grid on
+% set(gcf,'position',[500,100,700,800])
+
 figure;
-subplot(3,1,1)
-plot(period_time_index, err_upper_tank1,LineWidth=2);
+plot(period_time_index, err_upper_tank1,period_time_index,err_upper_tank2,period_time_index, err_bottom_tank2,LineWidth=2);
 xlabel('Period Time (h)')
-ylabel('Error of the upper temperature in tank1')
+ylabel('Root Mean Squared Error')
+ylim([1.5,6.5])
 grid on
-subplot(3,1,2)
-plot(period_time_index, err_upper_tank2,LineWidth=2);
-xlabel('Period Time (h)')
-ylabel('Error of the upper temperature in tank2')
-grid on
-subplot(3,1,3)
-plot(period_time_index, err_bottom_tank2,LineWidth=2);
-xlabel('Period Time (h)')
-ylabel('Error of the bottom temperature in tank1')
-grid on
-set(gcf,'position',[500,100,700,800])
+legend("Error of the upper temperature in tank1","Error of the upper temperature in tank2","Error of the bottom temperature in tank1")
+set(gcf,'position',[500,100,700,500])
 
 
 figure;
 plot(period_time_index, err_upper_tank1+err_upper_tank2+err_bottom_tank2,LineWidth=2);
 xlabel('Period Time (h)')
-ylabel('Total error')
+ylabel('Total Root Mean Squared Error')
 grid on
 set(gcf,'position',[500,200,700,500])
 

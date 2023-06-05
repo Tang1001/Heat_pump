@@ -70,30 +70,26 @@ Consp_water=cell2table(Consp_water(2:end,:));
 [date_V_water,V_water]=read_csv(Consp_water);  %[m^3]
 
 
-%% Choose data between 7:00 ~ 19:00
-%7:00 ~ 19:00
-%0~12
+%% Choose data between 7:05 ~ 18:30
+%7:05 ~ 18:30
 % Time span for the simulation
-t_start = 0;
-t_end = 12;     % end time [h]
-sample_time = 2;    % [min]
+t_start = 0+5/60;
+t_end = 11.5;     % end time [h]
+sample_time = 5;    % [min]
 time_span = [t_start:sample_time/60:t_end];
 time_data = time_span;
 
 %1min
-m_p_dot_data=FR_hp(60*7+1:60*19+1)*1000;  %[L/h] 60*7+1~60*19
-T_in_data=T_out_he(60*7+1:60*19+1);
-T_upper_tank1_data = T_upper_tank1(60*7+1:60*19+1);
-T_bottom_tank2_data = T_bottom_tank2(60*7+1:60*19+1);
+m_p_dot_data=FR_hp(60*7+1+5:60*18.5+1)*1000;  %[L/h] 60*7+1+5~60*(7+11.5)+1
+T_in_data=T_out_he(60*7+1+5:60*18.5+1);
+T_upper_tank1_data = T_upper_tank1(60*7+1+5:60*18.5+1);
+T_bottom_tank2_data = T_bottom_tank2(60*7+1+5:60*18.5+1);
 
 %8min
-T_upper_tank2_data = T_upper_tank2(round(60/8*7):round(60/8*19)+1); %06:56~19:04
+T_upper_tank2_data = T_upper_tank2(round(60/8*7)+1:round(60/8*18.5)+1); %07:04~18:32
 
 %1h
 m_s_dot_data=V_water(1*8:1*20)*1000;    %[L/h] 07:00~19:00
-time_data_1min=0:1/60:12;
-time_data_1h=0:12;
-time_data_8min=0-4/60:8/60:12+4/60;
 
 
 
@@ -136,11 +132,11 @@ objective_function = @(params) objFun_Euler_2andNlayers(time_data, T_initial, m_
 Aeq = [0, ones(1,num_layer_tank2), 0,0,0];
 beq = [500];
 lb = [0, zeros(1,num_layer_tank2), 1,9,800];
-ub = [0.1, ones(1,num_layer_tank2)*500, 5,15,1200];
+ub = [0.01, ones(1,num_layer_tank2)*500, 5,15,1200];
 options = optimoptions('fmincon','Display','iter','Algorithm','sqp');
 options.MaxFunctionEvaluations = 3000;
 P_optimal = fmincon(objective_function, P0, [], [], Aeq, beq, lb, ub, [], options);
-
+save("optimal_params.mat", "P_optimal")
 
 R_tank12_optimal = P_optimal(1);
 m_layer_tank2_optimal=zeros(num_layer_tank2,1);
